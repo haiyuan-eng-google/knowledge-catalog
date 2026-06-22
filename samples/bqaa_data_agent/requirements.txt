@@ -1,0 +1,11 @@
+# Runtime + deployment dependencies for the BQAA Data Agent.
+# google-adk >= 1.27.0 enables BQAA auto-view creation and tool provenance.
+google-adk>=1.27.0
+google-cloud-dataplex
+mcp
+google-api-core
+google-cloud-aiplatform[agent_engines]
+python-dotenv
+# BigQuery client libs used by the BigQueryAgentAnalyticsPlugin storage writer.
+google-cloud-bigquery
+google-cloud-bigquery-storage

@@ -1,0 +1,3 @@
+# Dependencies for analyze.py only (the BQAA SDK consumption layer).
+# Not needed by the agent runtime / Agent Engine deployment.
+bigquery-agent-analytics[llm]
