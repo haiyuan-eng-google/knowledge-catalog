@@ -29,7 +29,7 @@ Install the dependencies. It is recommended to create a Python Virtual Environme
 ```shell  
 python3 -m venv /tmp/kcsearch  
 source /tmp/kcsearch/bin/activate
-cd samples/chat_with_data_agent/knowledge_catalog_discovery_agent  
+cd samples/bqaa_data_agent/knowledge_catalog_discovery_agent  
 pip3 install -r requirements.txt  
 ```
 

@@ -25,7 +25,11 @@ agent_dir = os.path.dirname(os.path.abspath(__file__))
 if agent_dir not in sys.path:
     sys.path.insert(0, agent_dir)
 
-from agent import build_bqaa_plugin, root_agent
+# NOTE: `agent` is imported lazily inside `_build_app()` (create/update only).
+# Importing it eagerly reads GOOGLE_CLOUD_PROJECT, refreshes ADC, and builds the
+# BQAA plugin — none of which should be required for DEPLOY_ACTION=delete, and
+# all of which must see values loaded from .env first (load_dotenv runs in main
+# before _build_app is ever called).
 from utils import get_bqaa_dataset_id, get_bqaa_location, get_bqaa_table_id
 
 # Configure logging
@@ -41,6 +45,9 @@ _DEFAULT_REQUIREMENTS = [
     "python-dotenv",
     "google-cloud-bigquery",
     "google-cloud-bigquery-storage",
+    # Required by BigQueryAgentAnalyticsPlugin (Arrow encoding for the Storage
+    # Write API); importing the plugin fails without it.
+    "pyarrow",
 ]
 
 
@@ -79,6 +86,10 @@ def _build_app() -> AdkApp:
     telemetry sink for this sample. Set it True if you additionally want
     OpenTelemetry spans in Cloud Trace.
     """
+    # Lazy import (see module-top note): only create/update need the agent,
+    # ADC, and the BQAA plugin — delete must not.
+    from agent import build_bqaa_plugin, root_agent
+
     logger.info(
         "Initializing AdkApp with root_agent + BigQueryAgentAnalyticsPlugin"
         " (dataset=%s, table=%s)...",
@@ -210,7 +221,9 @@ def delete(resource_id: str) -> None:
 
 
 def main() -> None:
-    load_dotenv()
+    # Load .env from the agent dir BEFORE create()/update() lazily import the
+    # agent module (which reads GOOGLE_CLOUD_PROJECT / BIG_QUERY_* at import).
+    load_dotenv(os.path.join(agent_dir, ".env"))
 
     project_id = os.getenv("GOOGLE_CLOUD_PROJECT") or os.getenv("PROJECT_ID")
     location = os.getenv("GOOGLE_CLOUD_LOCATION", "us-central1")
@@ -219,6 +232,10 @@ def main() -> None:
     bucket_name = os.getenv("GOOGLE_CLOUD_STORAGE_BUCKET") or os.getenv(
         "STAGING_BUCKET", default_bucket_name
     )
+    # Accept either a bare bucket name or a gs:// URI; the storage client and the
+    # gs://{bucket_name} construction below both expect the bare name.
+    if bucket_name:
+        bucket_name = bucket_name.removeprefix("gs://").rstrip("/")
     service_account = os.getenv("SERVICE_ACCOUNT")
 
     action = os.getenv("DEPLOY_ACTION", "create").lower()

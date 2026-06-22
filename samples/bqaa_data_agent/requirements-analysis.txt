@@ -1,3 +1,7 @@
 # Dependencies for analyze.py only (the BQAA SDK consumption layer).
 # Not needed by the agent runtime / Agent Engine deployment.
-bigquery-agent-analytics[llm]
+#
+# analyze.py uses only code-based evaluators (latency / turn_count / error_rate),
+# so the base package is enough. Install bigquery-agent-analytics[llm] instead if
+# you extend the script with LLM-as-judge scoring.
+bigquery-agent-analytics

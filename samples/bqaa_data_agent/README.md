@@ -52,6 +52,18 @@ pip install -r requirements.txt
 # Application Default Credentials for local runs:
 gcloud auth application-default login
 
+# Enable the Google Cloud APIs this sample uses:
+#   - aiplatform        : Gemini model calls (Vertex AI)
+#   - bigquery          : query/list/inspect tools + BQAA jobs
+#   - bigquerystorage   : BQAA plugin writes events via the Storage Write API
+#   - dataplex          : Dataplex OneMCP + Knowledge Catalog discovery
+gcloud services enable \
+  aiplatform.googleapis.com \
+  bigquery.googleapis.com \
+  bigquerystorage.googleapis.com \
+  dataplex.googleapis.com \
+  --project="${GOOGLE_CLOUD_PROJECT:-your-project-id}"
+
 # Required environment:
 export GOOGLE_CLOUD_PROJECT="your-project-id"
 export GOOGLE_CLOUD_LOCATION="us-central1"
@@ -115,9 +127,15 @@ This is only a slice of the SDK — it also supports LLM-as-Judge scoring, traje
 ```bash
 export GOOGLE_CLOUD_PROJECT="your-project-id"
 export GOOGLE_CLOUD_LOCATION="us-central1"
-export STAGING_BUCKET="gs://your-staging-bucket"   # optional; defaults to gs://{project}-adk-staging
+export STAGING_BUCKET="your-staging-bucket"         # optional; bare name or gs:// URI; defaults to {project}-adk-staging
 export SERVICE_ACCOUNT="your-runtime-sa@your-project.iam.gserviceaccount.com"  # optional
-export BIG_QUERY_DATASET_ID="agent_analytics"       # persisted to the container
+
+# BQAA destination persisted into the deployed container. Set all three so the
+# deployed agent writes to the same place your local runs read from; omitted
+# values fall back to agent_analytics / agent_events / US.
+export BIG_QUERY_DATASET_ID="agent_analytics"
+export BIG_QUERY_TABLE_ID="agent_events"
+export BQ_LOCATION="US"
 
 # Create:
 DEPLOY_ACTION="create" python3 deploy.py
