@@ -41,6 +41,7 @@ try:
       get_bqaa_location,
       get_bqaa_table_id,
       get_consumer_project,
+      get_model_id,
   )
 except ImportError:
   from knowledge_catalog_discovery_agent.agent import (
@@ -51,10 +52,12 @@ except ImportError:
       get_bqaa_location,
       get_bqaa_table_id,
       get_consumer_project,
+      get_model_id,
   )
 
 consumer_project = get_consumer_project()
-GEMINI_MODEL = f"projects/{consumer_project}/locations/global/publishers/google/models/gemini-2.5-flash"
+# Served from the Vertex AI `global` endpoint (default model: gemini-3.5-flash).
+GEMINI_MODEL = f"projects/{consumer_project}/locations/global/publishers/google/models/{get_model_id()}"
 
 BIGQUERY_MCP_ENDPOINT = "https://bigquery.googleapis.com/mcp"
 DATAPLEX_MCP_ENDPOINT = "https://dataplex.googleapis.com/mcp"

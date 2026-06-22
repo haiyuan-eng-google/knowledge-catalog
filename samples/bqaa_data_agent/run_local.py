@@ -69,10 +69,16 @@ async def _run(prompts: list[str]) -> None:
               print(f"\n[tool call] {part.function_call.name}", flush=True)
       print()
   finally:
-    # Closing the runner flushes and closes the BQAA plugin so buffered events
-    # are written to BigQuery before the process exits.
+    # Drain the BQAA plugin BEFORE closing the runner. Closing alone does not
+    # reliably flush events emitted by the final lifecycle callbacks (e.g.
+    # INVOCATION_COMPLETED), so flush each plugin explicitly first to avoid
+    # losing the tail of the trace.
+    for plugin in app.plugins:
+      flush = getattr(plugin, "flush", None)
+      if flush is not None:
+        await flush()
     await runner.close()
-    print("\nRunner closed; BQAA events flushed to BigQuery.")
+    print("\nBQAA plugin flushed and runner closed; events written to BigQuery.")
 
 
 def main() -> None:

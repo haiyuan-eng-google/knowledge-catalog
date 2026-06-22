@@ -61,6 +61,7 @@ export GOOGLE_GENAI_USE_VERTEXAI="True"
 export BIG_QUERY_DATASET_ID="agent_analytics"
 export BIG_QUERY_TABLE_ID="agent_events"
 export BQ_LOCATION="US"
+export GEMINI_MODEL_ID="gemini-3.5-flash"   # served from the Vertex AI global endpoint
 
 # Create the BQAA dataset once (table is auto-created by the plugin):
 bq --location="${BQ_LOCATION}" mk --dataset "${GOOGLE_CLOUD_PROJECT}:${BIG_QUERY_DATASET_ID}"

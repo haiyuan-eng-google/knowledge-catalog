@@ -9,7 +9,9 @@ from . import tools
 from .utils import get_consumer_project, get_knowledge_base_entry_group
 
 consumer_project = get_consumer_project()
-GEMINI_MODEL = f"projects/{consumer_project}/locations/global/publishers/google/models/gemini-2.5-flash"
+# Served from the Vertex AI `global` endpoint; override via GEMINI_MODEL_ID.
+_MODEL_ID = os.environ.get("GEMINI_MODEL_ID", "gemini-3.5-flash")
+GEMINI_MODEL = f"projects/{consumer_project}/locations/global/publishers/google/models/{_MODEL_ID}"
 
 # Paths to the skill files relative to the agent.py location
 SKILL_FILE_PATH = os.path.join(os.path.dirname(__file__), 'SKILL.md')

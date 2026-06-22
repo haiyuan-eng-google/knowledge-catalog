@@ -17,6 +17,8 @@ DEFAULT_BQAA_TABLE_ID = "agent_events"
 # BigQuery location of the dataset above. Keep in sync with where the dataset
 # was created; this is distinct from the Vertex AI location used for the model.
 DEFAULT_BQAA_LOCATION = "US"
+# Gemini model id served from the Vertex AI `global` endpoint.
+DEFAULT_MODEL_ID = "gemini-3.5-flash"
 
 
 def get_consumer_project() -> str:
@@ -44,3 +46,8 @@ def get_bqaa_table_id() -> str:
 def get_bqaa_location() -> str:
   """Returns the BigQuery location of the BQAA dataset."""
   return os.environ.get("BQ_LOCATION", DEFAULT_BQAA_LOCATION)
+
+
+def get_model_id() -> str:
+  """Returns the Gemini model id (served from the Vertex `global` endpoint)."""
+  return os.environ.get("GEMINI_MODEL_ID", DEFAULT_MODEL_ID)

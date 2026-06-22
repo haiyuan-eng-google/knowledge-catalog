@@ -18,7 +18,14 @@ import argparse
 import os
 import sys
 
-from bigquery_agent_analytics import Client, SystemEvaluator, TraceFilter
+from bigquery_agent_analytics import Client, TraceFilter
+
+# The prebuilt code-based evaluator is named ``CodeEvaluator`` in current SDK
+# releases; older builds exposed it as ``SystemEvaluator``. Support both.
+try:
+  from bigquery_agent_analytics import CodeEvaluator as CodeEvaluator
+except ImportError:  # pragma: no cover - older SDK fallback
+  from bigquery_agent_analytics import SystemEvaluator as CodeEvaluator
 
 # Ensure local imports resolve when run as a script.
 curr_dir = os.path.dirname(os.path.abspath(__file__))
@@ -67,9 +74,9 @@ def evaluate_sessions(
   """Runs a few code-based (deterministic) evaluators over recent sessions."""
   filters = TraceFilter(limit=limit)
   evaluators = {
-      "latency": SystemEvaluator.latency(threshold_ms=latency_ms),
-      "turn_count": SystemEvaluator.turn_count(max_turns=max_turns),
-      "error_rate": SystemEvaluator.error_rate(max_error_rate=0.1),
+      "latency": CodeEvaluator.latency(threshold_ms=latency_ms),
+      "turn_count": CodeEvaluator.turn_count(max_turns=max_turns),
+      "error_rate": CodeEvaluator.error_rate(max_error_rate=0.1),
   }
 
   print("\n=== Code-based evaluation (BQAA SDK) ===")
