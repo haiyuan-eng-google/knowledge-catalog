@@ -3,6 +3,9 @@
 google-adk>=1.27.0
 google-cloud-dataplex
 mcp
+# Lets google-auth use its async (AsyncAuthorizedSession) transport for the
+# OneMCP calls; without it each MCP request logs a noisy mTLS-config warning.
+aiohttp
 google-api-core
 google-cloud-aiplatform[agent_engines]
 python-dotenv

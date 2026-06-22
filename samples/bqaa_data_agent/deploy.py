@@ -40,6 +40,8 @@ _DEFAULT_REQUIREMENTS = [
     "google-adk>=1.27.0",
     "google-cloud-dataplex",
     "mcp",
+    # Async google-auth transport for OneMCP calls (silences mTLS-config warning).
+    "aiohttp",
     "google-api-core",
     "google-cloud-aiplatform[agent_engines]",
     "python-dotenv",
