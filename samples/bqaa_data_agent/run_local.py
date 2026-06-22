@@ -9,8 +9,12 @@ Prerequisites:
   - `gcloud auth application-default login`
   - The BQAA dataset must already exist:
         bq --location=US mk --dataset "$GOOGLE_CLOUD_PROJECT:agent_analytics"
-  - export GOOGLE_CLOUD_PROJECT / GOOGLE_CLOUD_LOCATION (and optionally
-    BIG_QUERY_DATASET_ID, BIG_QUERY_TABLE_ID, BQ_LOCATION).
+  - export GOOGLE_CLOUD_PROJECT / GOOGLE_CLOUD_LOCATION and
+    GOOGLE_GENAI_USE_VERTEXAI=True (and optionally BIG_QUERY_DATASET_ID,
+    BIG_QUERY_TABLE_ID, BQ_LOCATION, GEMINI_MODEL_ID).
+  - BQ_LOCATION must match the dataset's actual location (default US). Reusing
+    an existing dataset in another region without setting BQ_LOCATION causes
+    "dataset not found in location ..." errors.
 
 Usage:
   python3 run_local.py                       # runs the built-in demo prompts
@@ -70,9 +74,9 @@ async def _run(prompts: list[str]) -> None:
       print()
   finally:
     # Drain the BQAA plugin BEFORE closing the runner. Closing alone does not
-    # reliably flush events emitted by the final lifecycle callbacks (e.g.
-    # INVOCATION_COMPLETED), so flush each plugin explicitly first to avoid
-    # losing the tail of the trace.
+    # reliably flush the events emitted by the final lifecycle callbacks (e.g.
+    # AGENT_RESPONSE / AGENT_COMPLETED), so flush each plugin explicitly first
+    # to avoid losing the tail of the trace.
     for plugin in app.plugins:
       flush = getattr(plugin, "flush", None)
       if flush is not None:

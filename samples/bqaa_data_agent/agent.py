@@ -56,7 +56,9 @@ except ImportError:
   )
 
 consumer_project = get_consumer_project()
-# Served from the Vertex AI `global` endpoint (default model: gemini-3.5-flash).
+# Full Vertex AI model resource path pinned to the `global` endpoint (default
+# model: gemini-3.5-flash; override via GEMINI_MODEL_ID). Requires
+# GOOGLE_GENAI_USE_VERTEXAI=True so ADK routes the call through Vertex AI.
 GEMINI_MODEL = f"projects/{consumer_project}/locations/global/publishers/google/models/{get_model_id()}"
 
 BIGQUERY_MCP_ENDPOINT = "https://bigquery.googleapis.com/mcp"
@@ -177,8 +179,9 @@ root_agent = LlmAgent(
 def build_bqaa_plugin() -> BigQueryAgentAnalyticsPlugin:
   """Builds the BigQuery Agent Analytics plugin used as the trace logging path.
 
-  The plugin writes one row per agent event (LLM_REQUEST, LLM_RESPONSE,
-  TOOL_STARTED/COMPLETED, agent transfers, errors, ...) to
+  The plugin writes one row per agent event — e.g. USER_MESSAGE_RECEIVED,
+  INVOCATION_STARTING, AGENT_STARTING, LLM_REQUEST, LLM_RESPONSE, TOOL_STARTING,
+  TOOL_COMPLETED, AGENT_RESPONSE, AGENT_COMPLETED, plus tool/agent errors — to
   ``{project}.{dataset}.{table}`` via the BigQuery Storage Write API. The
   dataset must already exist; the events table is auto-created on first write.
   """
