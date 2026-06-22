@@ -20,20 +20,20 @@ Ensure you have the following permissions via IAM Roles:
 
 ### Setup
 
-Clone the Github Repository:  
-```shell  
-git clone https://github.com/GoogleCloudPlatform/knowledge-catalog.git  
+Clone the Github Repository:
+```shell
+git clone https://github.com/GoogleCloudPlatform/knowledge-catalog.git
 ```
 
-Install the dependencies. It is recommended to create a Python Virtual Environment:  
-```shell  
-python3 -m venv /tmp/kcsearch  
+Install the dependencies. It is recommended to create a Python Virtual Environment:
+```shell
+python3 -m venv /tmp/kcsearch
 source /tmp/kcsearch/bin/activate
-cd samples/bqaa_data_agent/knowledge_catalog_discovery_agent  
-pip3 install -r requirements.txt  
+cd samples/bqaa_data_agent/knowledge_catalog_discovery_agent
+pip3 install -r requirements.txt
 ```
 
-Set the environment variables:  
+Set the environment variables:
 ```shell
 
 # Replace <PROJECT_ID> with your consumer project ID. (Required)
@@ -47,7 +47,7 @@ export KNOWLEDGE_BASE_ENTRY_GROUP=<KB_ENTRY_GROUP_RESOURCE_NAME>
 ```
 
 ### Run the Agent
-There are 2 ways to run the Knowledge Catalog Discovery agent:  
+There are 2 ways to run the Knowledge Catalog Discovery agent:
 
 1. *As the root agent* - in this case, rename the `discovery_agent` variable in `agent.py` to `root_agent` and run it using ADK CLI (steps below).
 
@@ -63,7 +63,7 @@ my_custom_agent/
     └── utils.py
 ```
 
-Irrespective of the path you choose, the agent can be run using the ADK CLI commands below:  
+Irrespective of the path you choose, the agent can be run using the ADK CLI commands below:
 
 ```shell
 adk run path/to/agent/parent/folder

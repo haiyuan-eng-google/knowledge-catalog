@@ -319,4 +319,3 @@ def knowledge_catalog_knowledge_base_search(
     return {"error": "All search queries failed.", "details": errors}
 
   return _deduplicate_and_fetch_context(query_results_list, 100)
-

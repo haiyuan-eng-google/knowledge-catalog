@@ -52,6 +52,17 @@ pip install -r requirements.txt
 # Application Default Credentials for local runs:
 gcloud auth application-default login
 
+# Required environment (set these first; commands below reference them):
+export GOOGLE_CLOUD_PROJECT="your-project-id"
+export GOOGLE_CLOUD_LOCATION="us-central1"
+export GOOGLE_GENAI_USE_VERTEXAI="True"
+
+# Optional (defaults shown):
+export BIG_QUERY_DATASET_ID="agent_analytics"
+export BIG_QUERY_TABLE_ID="agent_events"
+export BQ_LOCATION="US"
+export GEMINI_MODEL_ID="gemini-3.5-flash"   # served from the Vertex AI global endpoint
+
 # Enable the Google Cloud APIs this sample uses:
 #   - aiplatform        : Gemini model calls (Vertex AI)
 #   - bigquery          : query/list/inspect tools + BQAA jobs
@@ -62,18 +73,7 @@ gcloud services enable \
   bigquery.googleapis.com \
   bigquerystorage.googleapis.com \
   dataplex.googleapis.com \
-  --project="${GOOGLE_CLOUD_PROJECT:-your-project-id}"
-
-# Required environment:
-export GOOGLE_CLOUD_PROJECT="your-project-id"
-export GOOGLE_CLOUD_LOCATION="us-central1"
-export GOOGLE_GENAI_USE_VERTEXAI="True"
-
-# Optional (defaults shown):
-export BIG_QUERY_DATASET_ID="agent_analytics"
-export BIG_QUERY_TABLE_ID="agent_events"
-export BQ_LOCATION="US"
-export GEMINI_MODEL_ID="gemini-3.5-flash"   # served from the Vertex AI global endpoint
+  --project="${GOOGLE_CLOUD_PROJECT}"
 
 # Create the BQAA dataset once (table is auto-created by the plugin):
 bq --location="${BQ_LOCATION}" mk --dataset "${GOOGLE_CLOUD_PROJECT}:${BIG_QUERY_DATASET_ID}"
